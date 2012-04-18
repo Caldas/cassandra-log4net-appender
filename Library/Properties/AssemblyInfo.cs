@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Vtex")]
-[assembly: AssemblyProduct("")]
+[assembly: AssemblyProduct("Cassandra Log4Net Appender")]
 [assembly: AssemblyCopyright("Copyright © Fábio Caldas / Vtex 2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
