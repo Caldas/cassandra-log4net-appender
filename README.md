@@ -20,10 +20,10 @@ This project is a c# port of Log4J DataStax Cassandra Appender and it was develo
 ### 2. Requirements
 ==============
 
-. Windows XP or greater
-. Visual Studio 2010
-. Net 4.0
-. NuGet Package: log4net
+* Windows XP or greater
+* Visual Studio 2010
+* Net 4.0
+* NuGet Package: log4net
 
 ### 3. Using Cassandra Log4Net Appender
 ==============
