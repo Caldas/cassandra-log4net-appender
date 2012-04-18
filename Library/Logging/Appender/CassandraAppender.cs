@@ -20,6 +20,8 @@ namespace CassandraLog4NetAppenderLibrary.Logging.Appender
         {
             base.ActivateOptions();
             new CassandraLevelMapping().ActivateOptions();
+
+            //TODO: #2 Create Cassandra Client
         }
 
         public void AddMapping(CassandraLevelMapping mapping)
@@ -43,7 +45,7 @@ namespace CassandraLog4NetAppenderLibrary.Logging.Appender
                 Column column = null;
                 ConsistencyLevel consistency_level = ConsistencyLevel.ONE;
 
-                //TODO: Insert data
+                //TODO: #1 Insert data
                 //client.insert(key, column_parent, column, consistency_level);
             }
             catch (Exception exception)
@@ -52,7 +54,7 @@ namespace CassandraLog4NetAppenderLibrary.Logging.Appender
             }
         }
 
-        //TODO: Review retrieve data methods
+        //TODO: #1 Review retrieve data methods
         //private ColumnPath getColumnPath(String columnFamily, LoggingEvent loggingEvent)
         //{
         //    try
@@ -90,7 +92,7 @@ namespace CassandraLog4NetAppenderLibrary.Logging.Appender
 
         public void Close()
         {
-            //TODO: Close Cassandra client and Thrifth transport
+            //TODO: #2 Close Cassandra client and Thrifth transport
         }
 
         public Boolean RequiresLayout()

@@ -10,7 +10,7 @@ namespace CassandraLog4NetAppenderLibrary.Logging.LevelMapping
         public String ThriftAddress { get; set; }
         public String ThriftPort { get; set; }
         public String KeyStrategy { get; set; }
-        //TODO: Add ConsistencyLevel to Mapping
+        //TODO: #3 Add ConsistencyLevel to Mapping
 
         public override void ActivateOptions()
         {
