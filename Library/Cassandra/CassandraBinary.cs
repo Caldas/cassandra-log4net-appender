@@ -1,7 +1,8 @@
-﻿/// <summary>
-/// This class was extracted from Cassandraemon v1.0.6 project (https://cassandraemon.codeplex.com/)
-/// </summary>
-
+﻿// -----------------------------------------------------------------------
+// <copyright company="Cassandraemon">
+//     This class was extracted from Cassandraemon v1.0.6 project (https://cassandraemon.codeplex.com/)
+// </copyright>
+// -----------------------------------------------------------------------
 using System;
 using System.Linq;
 

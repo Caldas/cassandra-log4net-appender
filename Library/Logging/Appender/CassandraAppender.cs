@@ -1,4 +1,10 @@
-﻿using System;
+﻿// -----------------------------------------------------------------------
+// <copyright file="CassandraAppender.cs" company="VTEX OnLine Applications">
+//     Copyright (c) VTEX OnLine Applications. All rights reserved.
+// </copyright>
+// <author>Fábio Caldas</author>
+// -----------------------------------------------------------------------
+using System;
 using Apache.Cassandra;
 using CassandraLog4NetAppenderLibrary.Logging.LevelMapping;
 using log4net.Appender;

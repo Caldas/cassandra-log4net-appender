@@ -1,4 +1,10 @@
-﻿using System;
+﻿// -----------------------------------------------------------------------
+// <copyright file="CassandraLevelMapping.cs" company="VTEX OnLine Applications">
+//     Copyright (c) VTEX OnLine Applications. All rights reserved.
+// </copyright>
+// <author>Fábio Caldas</author>
+// -----------------------------------------------------------------------
+using System;
 using log4net.Util;
 
 namespace CassandraLog4NetAppenderLibrary.Logging.LevelMapping

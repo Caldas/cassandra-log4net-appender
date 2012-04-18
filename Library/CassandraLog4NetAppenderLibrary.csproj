@@ -55,7 +55,7 @@
     <Compile Include="Cassandra\TimeGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Logging\Appender\CassandraAppender.cs" />
-    <Compile Include="Logging\LevelMapping\LevelMapping.cs" />
+    <Compile Include="Logging\LevelMapping\CassandraLevelMapping.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
