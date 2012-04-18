@@ -2,7 +2,7 @@
 
 ## Log4Net Appender to store your logs on Cassandra NoSQL
 	
-### Copyright (C) 2012 Fábio Caldas / Vtex
+### Copyright (C) 2012 Fábio Caldas / [Vtex](http://www.vtex.com.br)
 
 ## Contents
 ========
@@ -15,7 +15,7 @@
 ### 1. Description
 ==============
 
-This project is a c# port of Log4J DataStax Cassandra Appender and it was developed inspired by  https://github.com/sdolgy/cassandra-log4j-appender/
+This project is a c# port of Log4J DataStax Cassandra Appender and it was developed inspired by [Sdolgy - Cassandra Log4j Appender](https://github.com/sdolgy/cassandra-log4j-appender/) 
 
 ### 2. Requirements
 ==============
@@ -28,13 +28,13 @@ This project is a c# port of Log4J DataStax Cassandra Appender and it was develo
 ### 3. Using Cassandra Log4Net Appender
 ==============
 
-To Be Definied
+**To Be Definied**
 
 ### 4. Copyright
 ==============
 
 Cassandra Log4Net Appender - Log4Net Appender to store your logs on Cassandra NoSQL
-Copyright (C) 2012 Fábio Caldas / Vtex <fabio.caldas@vtex.com.br>
+Copyright (C) 2012 Fábio Caldas / [Vtex](http://www.vtex.com.br) <fabio.caldas@vtex.com.br>
 
 This library is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
