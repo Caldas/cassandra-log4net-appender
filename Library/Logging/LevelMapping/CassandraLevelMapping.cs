@@ -11,12 +11,16 @@ namespace CassandraLog4NetAppenderLibrary.Logging.LevelMapping
 {
     public class CassandraLevelMapping : LevelMappingEntry
     {
-        public String Keyspace { get; set; }
+        public String Hosts { get; set; }
+        public String Port { get; set; }
+        public String AppName { get; set; }
+        public String KeyspaceName { get; set; }
         public String ColumnFamily { get; set; }
-        public String ThriftAddress { get; set; }
-        public String ThriftPort { get; set; }
-        public String KeyStrategy { get; set; }
-        //TODO: #3 Add ConsistencyLevel to Mapping
+        public String PlacementStrategy { get; set; }
+        public String StrategyOptions { get; set; }
+        public String ReplicationFactor { get; set; }
+        public String ConsistencyLevelWrite { get; set; }
+        public String MaxBufferedRows { get; set; }
 
         public override void ActivateOptions()
         {
