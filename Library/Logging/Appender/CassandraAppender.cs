@@ -45,7 +45,7 @@ namespace CassandraLog4NetAppenderLibrary.Logging.Appender
         private String placementStrategy = "org.apache.cassandra.locator.SimpleStrategy";
         private Dictionary<String, String> strategyOptions = new Dictionary<String, String>();
         private Int32 replicationFactor = 1;
-        private ConsistencyLevel consistencyLevelWrite = ConsistencyLevel.ONE;
+        private ConsistencyLevel consistencyLevel = ConsistencyLevel.ONE;
         private Int32 maxBufferedRows = 1;
         private String hosts = "localhost";
         private Int32 port = 9160;
@@ -121,7 +121,7 @@ namespace CassandraLog4NetAppenderLibrary.Logging.Appender
             {
                 try
                 {
-                    this.client.batch_mutate(this.rowBuffer, this.consistencyLevelWrite);
+                    this.client.batch_mutate(this.rowBuffer, this.consistencyLevel);
                 }
                 catch (Exception exception)
                 {
@@ -144,7 +144,6 @@ namespace CassandraLog4NetAppenderLibrary.Logging.Appender
 
         private List<Mutation> CreateMutationList(LoggingEvent loggingEvent)
         {
-            //TODO: Convert java code
             List<Mutation> mutList = new List<Mutation>();
 
             Int64 colTs = TimeGenerator.GetUnixTime();
@@ -163,20 +162,11 @@ namespace CassandraLog4NetAppenderLibrary.Logging.Appender
                 CreateMutation(mutList, "method_name", locInfo.MethodName, colTs);
             }
             CreateMutation(mutList, "message", loggingEvent.RenderedMessage, colTs);
-            //createMutation(mutList, "ndc", loggingEvent.getNDC(), colTs);
-            //createMutation(mutList, "app_start_time", LoggingEvent.getStartTime(), colTs);
+            //CreateMutation(mutList, "ndc", event.getNDC(), colTs); //REMOVED
+            CreateMutation(mutList, "app_start_time", TimeGenerator.GetUnixTime(LoggingEvent.StartTime), colTs);
             CreateMutation(mutList, "thread_name", loggingEvent.ThreadName, colTs);
-            //String[] throwableStrs = event.getThrowableStrRep();
-            //if (throwableStrs != null)
-            //{
-            //    StringBuilder builder = new StringBuilder();
-            //    for (String throwableStr : throwableStrs)
-            //    {
-            //        builder.append(throwableStr);
-            //    }
-            //    createMutation(mutList, "throwable_str_rep", builder.toString(), colTs);
-            //}
             CreateMutation(mutList, "log_timestamp", TimeGenerator.GetUnixTime(loggingEvent.TimeStamp), colTs);
+            CreateMutation(mutList, "throwable_str_rep", loggingEvent.GetExceptionString(), colTs);
 
             return mutList;
         }
@@ -283,17 +273,17 @@ namespace CassandraLog4NetAppenderLibrary.Logging.Appender
         public void SetStrategyOptions(String newOptions)
         {
             //TODO: Convert java code
-            //if (newOptions == null) {
-            //  throw new IllegalArgumentException("strategyOptions can't be null.");
-            //}
-            //try
-            //{
-            //  this.strategyOptions = ((Map)jsonMapper.readValue(unescape(newOptions), this.strategyOptions.getClass()));
-            //}
-            //catch (Exception e)
-            //{
-            //  throw new IllegalArgumentException(new StringBuilder().append("Invalid JSON map: ").append(newOptions).append(", error: ").append(e.getMessage()).toString());
-            //}
+            if (newOptions == null)
+                throw new NullReferenceException("strategyOptions can't be null.");
+
+            try
+            {
+                //this.strategyOptions = ((Map)jsonMapper.readValue(unescape(newOptions), this.strategyOptions.getClass()));
+            }
+            catch (Exception exception)
+            {
+                throw new ArgumentException(String.Format("Invalid JSON map: {0}, error: {1}", newOptions, exception.Message));
+            }
         }
 
         public Int32 GetReplicationFactor()
@@ -308,20 +298,12 @@ namespace CassandraLog4NetAppenderLibrary.Logging.Appender
 
         public String GetConsistencyLevelWrite()
         {
-            return this.consistencyLevelWrite.ToString();
+            return this.consistencyLevel.ToString();
         }
 
         public void SetConsistencyLevelWrite(String consistencyLevelWrite)
         {
-            //TODO: Convert java code
-            //try
-            //{
-            //  this.consistencyLevelWrite = ConsistencyLevel.valueOf(unescape(consistencyLevelWrite));
-            //}
-            //catch (IllegalArgumentException e)
-            //{
-            //  throw new IllegalArgumentException(new StringBuilder().append("Consistency level ").append(consistencyLevelWrite).append(" wasn't found. Available levels: ").append(StringUtils.join(ConsistencyLevel.values(), ", ")).append(".").toString());
-            //}
+            Enum.TryParse<ConsistencyLevel>(Unescape(consistencyLevelWrite), out consistencyLevel);
         }
 
         public int GetMaxBufferedRows()
@@ -378,32 +360,26 @@ namespace CassandraLog4NetAppenderLibrary.Logging.Appender
 
         private void CreateKeyspaceAndColumnFamily()
         {
-            //List cfDefList = new ArrayList();
-            //cfDefList.add(createCfDef());
-            //try
-            //{
-            //KsDef ksDef = new KsDef(this.keyspaceName, this.placementStrategy, cfDefList);
+            List<CfDef> cfDefList = new List<CfDef>();
+            cfDefList.Add(CreateCfDef());
+            try
+            {
+                KsDef ksDef = new KsDef();
+                ksDef.Name = this.keyspaceName;
+                ksDef.Strategy_class = this.placementStrategy;
+                ksDef.Cf_defs = cfDefList;
+                ksDef.Strategy_options = this.strategyOptions;
+                if (this.placementStrategy.Equals("org.apache.cassandra.locator.SimpleStrategy") && !this.strategyOptions.ContainsKey("replication_factor"))
+                    this.strategyOptions.Add("replication_factor", this.replicationFactor.ToString());
 
-            //if (this.placementStrategy.equals("org.apache.cassandra.locator.SimpleStrategy"))
-            //{
-            //if (!this.strategyOptions.containsKey("replication_factor")) {
-            //    this.strategyOptions.put("replication_factor", Integer.toString(this.replicationFactor));
-            //}
-            //}
-            //ksDef.setStrategy_options(this.strategyOptions);
-
-            //this.client.system_add_keyspace(ksDef);
-            //int magnitude = this.client.describe_ring(this.keyspaceName).size();
-            //Thread.sleep(1000 * magnitude);
-            //}
-            //catch (InterruptedException e)
-            //{
-            //throw new RuntimeException(e);
-            //}
-            //catch (Exception e)
-            //{
-            //throw new IOException(e);
-            //}
+                this.client.system_add_keyspace(ksDef);
+                int magnitude = this.client.describe_ring(this.keyspaceName).Count;
+                Thread.Sleep(1000 * magnitude);
+            }
+            catch (Exception exception)
+            {
+                throw exception;
+            }
         }
 
         private void CreateColumnFamily()
@@ -441,7 +417,7 @@ namespace CassandraLog4NetAppenderLibrary.Logging.Appender
             AddColumn(cfDef, "line_number", "UTF8Type");
             AddColumn(cfDef, "method_name", "UTF8Type");
             AddColumn(cfDef, "message", "UTF8Type");
-            AddColumn(cfDef, "ndc", "UTF8Type");
+            //AddColumn(cfDef, "ndc", "UTF8Type"); //REMOVED
             AddColumn(cfDef, "app_start_time", "LongType");
             AddColumn(cfDef, "thread_name", "UTF8Type");
             AddColumn(cfDef, "throwable_str_rep", "UTF8Type");
