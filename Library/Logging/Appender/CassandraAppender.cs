@@ -66,38 +66,34 @@ namespace CassandraLog4NetAppenderLibrary.Logging.Appender
 
         override public void ActivateOptions()
         {
-            //TODO: Convert java code
-            //try
-            //{
-            //    this.client = CassandraProxyClient.newProxyConnection(this.hosts, this.port, CassandraProxyClient.ConnectionStrategy.ROUND_ROBIN);
-            //}
-            //catch (Exception e)
-            //{
-            //    LogLog.error("Can't initialize cassandra connections", e);
-            //    this.errorHandler.error(new StringBuilder().append("Can't initialize cassandra connections: ").append(e).toString());
-            //}
+            try
+            {
+                //this.client = CassandraProxyClient.newProxyConnection(this.hosts, this.port, CassandraProxyClient.ConnectionStrategy.ROUND_ROBIN);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception("Can't initialize cassandra connections", exception);
+            }
 
-            //try
-            //{
-            //    setupSchema();
-            //}
-            //catch (Exception e)
-            //{
-            //    LogLog.error("Error setting up cassandra logging schema", e);
-            //    this.errorHandler.error(new StringBuilder().append("Error setting up cassandra logging schema: ").append(e).toString());
-            //}
+            try
+            {
+                SetupSchema();
+            }
+            catch (Exception exception)
+            {
+                throw new Exception("Error setting up cassandra logging schema", exception);
+            }
 
-            //try
-            //{
-            //    this.client.set_keyspace(this.keyspaceName);
-            //}
-            //catch (Exception e)
-            //{
-            //    LogLog.error("Error setting keyspace", e);
-            //    this.errorHandler.error(new StringBuilder().append("Error setting keyspace: ").append(e).toString());
-            //}
+            try
+            {
+                this.client.set_keyspace(this.keyspaceName);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception("Error setting keyspace: " + this.keyspaceName, exception);
+            }
 
-            //Reset();
+            Reset();
         }
 
         protected override void Append(LoggingEvent loggingEvent)
