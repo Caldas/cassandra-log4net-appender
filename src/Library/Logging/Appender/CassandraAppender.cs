@@ -54,10 +54,17 @@ namespace CassandraLog4NetAppenderLibrary.Logging.Appender
         private Dictionary<Byte[], Dictionary<String, List<Mutation>>> rowBuffer;
         private Apache.Cassandra.Cassandra.Iface client;
 
+        private ICassandraClientFactory cassandraClientFactory = null;
+
         private static String ip = GetIP();
         private static String hostname = GetHostName();
 
         public CassandraAppender() { }
+
+        public void SetCassandraClientFactory(ICassandraClientFactory newFactory) 
+        {
+            cassandraClientFactory = newFactory;
+        }
 
         public new Boolean RequiresLayout()
         {
@@ -68,7 +75,10 @@ namespace CassandraLog4NetAppenderLibrary.Logging.Appender
         {
             try
             {
-                this.client = CassandraProxyClient.CreateConnection(this.hosts, this.port);
+                if (cassandraClientFactory == null)
+                    cassandraClientFactory = new DefaultCassandraClientFactory(hosts, port);
+
+                this.client = cassandraClientFactory.CreateConnection();
             }
             catch (Exception exception)
             {
@@ -268,12 +278,12 @@ namespace CassandraLog4NetAppenderLibrary.Logging.Appender
 
         public void SetStrategyOptions(String newOptions)
         {
-            //TODO: Convert java code
             if (newOptions == null)
                 throw new NullReferenceException("strategyOptions can't be null.");
 
             try
             {
+                //TODO: Convert java code
                 //this.strategyOptions = ((Map)jsonMapper.readValue(unescape(newOptions), this.strategyOptions.getClass()));
             }
             catch (Exception exception)
