@@ -50,9 +50,6 @@
     <Compile Include="Cassandra\CassandraObjectExtensions.cs" />
     <Compile Include="Cassandra\TimeGenerator.cs" />
     <Compile Include="Logging\CassandraProxyClient.cs" />
-    <Compile Include="Logging\CircuitBreaker.cs" />
-    <Compile Include="Logging\CircuitState.cs" />
-    <Compile Include="Logging\ConnectionStrategy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Logging\Appender\CassandraAppender.cs" />
     <Compile Include="Logging\LevelMapping\CassandraLevelMapping.cs" />

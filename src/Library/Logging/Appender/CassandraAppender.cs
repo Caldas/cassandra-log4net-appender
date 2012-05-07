@@ -68,7 +68,7 @@ namespace CassandraLog4NetAppenderLibrary.Logging.Appender
         {
             try
             {
-                //this.client = CassandraProxyClient.newProxyConnection(this.hosts, this.port, CassandraProxyClient.ConnectionStrategy.ROUND_ROBIN);
+                this.client = CassandraProxyClient.CreateConnection(this.hosts, this.port);
             }
             catch (Exception exception)
             {
