@@ -28,7 +28,23 @@ This project is a c# port of [Log4J DataStax Cassandra Appender](http://www.data
 ### 3. Using Cassandra Log4Net Appender
 ==============
 
-**To Be Definied**
+* Add at configSections
+	<section name="log4net" type="log4net.Config.Log4NetConfigurationSectionHandler, log4net" />
+
+* Add Log4Net section
+  <log4net>
+    <root>
+      <level value="ALL" />
+      <appender-ref ref="CassandraAppender" />
+    </root>
+    <appender name="CassandraAppender" type="CassandraLog4NetAppenderLibrary.Logging.Appender.CassandraAppender, CassandraLog4NetAppenderLibrary">
+      <mapping>
+        <level value="ALL" />
+      </mapping>
+    </appender>
+  </log4net>
+
+* Configure and use Log4Net object
 
 ### 4. Copyright
 ==============
