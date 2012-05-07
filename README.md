@@ -17,6 +17,8 @@
 
 This project is a c# port of [Log4J DataStax Cassandra Appender](http://www.datastax.com/docs/datastax_enterprise2.0/logging/log4j_logging) and it was developed inspired by [Sdolgy - Cassandra Log4j Appender](https://github.com/sdolgy/cassandra-log4j-appender/) 
 
+A NuGet version is avaliable at: https://nuget.org/packages/CassandraLog4NetAppender
+
 ### 2. Requirements
 ==============
 
