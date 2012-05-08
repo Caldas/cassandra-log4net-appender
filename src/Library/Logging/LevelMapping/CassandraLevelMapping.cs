@@ -15,6 +15,7 @@ namespace CassandraLog4NetAppenderLibrary.Logging.LevelMapping
     {
         private const Int32 defaultPort = 9160;
         private const Int32 defaultMaxBufferedRows = 1;
+        private const Int32 defaultTtl = 0;
         private const Apache.Cassandra.ConsistencyLevel defaultConsistencyLevel = Apache.Cassandra.ConsistencyLevel.ONE;
 
         public String Hosts { get; set; }
@@ -26,6 +27,7 @@ namespace CassandraLog4NetAppenderLibrary.Logging.LevelMapping
         public String StrategyOptions { get; set; }
         public String ReplicationFactor { get; set; }
         public String ConsistencyLevel { get; set; }
+        public String Ttl { get; set; }
         public String MaxBufferedRows { get; set; }
         public String CassandraClientFactory { get; set; }
 
@@ -37,6 +39,7 @@ namespace CassandraLog4NetAppenderLibrary.Logging.LevelMapping
             PlacementStrategy = "org.apache.cassandra.locator.SimpleStrategy";
             ReplicationFactor = "1";
             ConsistencyLevel = defaultConsistencyLevel.ToString();
+            Ttl = String.Empty;
             MaxBufferedRows = defaultMaxBufferedRows.ToString();
             Hosts = "localhost";
             Port = defaultPort.ToString();
@@ -80,6 +83,13 @@ namespace CassandraLog4NetAppenderLibrary.Logging.LevelMapping
                     strategyOptions.Add(optionParts[0], optionParts[1]);
             }
             return strategyOptions;
+        }
+
+        public Int32 GetTtl() 
+        {
+            Int32 ttl = defaultTtl;
+            Int32.TryParse(Ttl, out ttl);
+            return ttl;
         }
     }
 }

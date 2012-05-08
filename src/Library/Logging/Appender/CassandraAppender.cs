@@ -22,8 +22,8 @@ namespace CassandraLog4NetAppenderLibrary.Logging.Appender
         private Dictionary<Byte[], Dictionary<String, List<Mutation>>> rowBuffer;
         private Apache.Cassandra.Cassandra.Iface client;
 
-        private static String ip = GetIP();
-        private static String hostname = GetHostName();
+        protected static String ip = GetIP();
+        protected static String hostname = GetHostName();
 
         public CassandraLevelMapping LevelMapping { get; set; }
 
@@ -121,7 +121,7 @@ namespace CassandraLog4NetAppenderLibrary.Logging.Appender
             this.rowBuffer = new Dictionary<Byte[], Dictionary<String, List<Mutation>>>();
         }
 
-        public virtual List<Mutation> CreateMutationList(LoggingEvent loggingEvent)
+        protected virtual List<Mutation> CreateMutationList(LoggingEvent loggingEvent)
         {
             List<Mutation> mutList = new List<Mutation>();
 
@@ -149,6 +149,33 @@ namespace CassandraLog4NetAppenderLibrary.Logging.Appender
             return mutList;
         }
 
+        protected virtual CfDef CreateCfDef()
+        {
+            CfDef cfDef = new CfDef();
+            cfDef.Keyspace = LevelMapping.KeyspaceName;
+            cfDef.Name = LevelMapping.ColumnFamily;
+            cfDef.Key_validation_class = "UUIDType";
+            cfDef.Comparator_type = "UTF8Type";
+            cfDef.Default_validation_class = "UTF8Type";
+
+            AddColumn(cfDef, "app_name", "UTF8Type");
+            AddColumn(cfDef, "host_ip", "UTF8Type");
+            AddColumn(cfDef, "host_name", "UTF8Type");
+            AddColumn(cfDef, "logger_name", "UTF8Type");
+            AddColumn(cfDef, "level", "UTF8Type");
+            AddColumn(cfDef, "class_name", "UTF8Type");
+            AddColumn(cfDef, "file_name", "UTF8Type");
+            AddColumn(cfDef, "line_number", "UTF8Type");
+            AddColumn(cfDef, "method_name", "UTF8Type");
+            AddColumn(cfDef, "message", "UTF8Type");
+            AddColumn(cfDef, "app_start_time", "LongType");
+            AddColumn(cfDef, "thread_name", "UTF8Type");
+            AddColumn(cfDef, "throwable_str_rep", "UTF8Type");
+            AddColumn(cfDef, "log_timestamp", "LongType");
+
+            return cfDef;
+        }
+
         protected void CreateMutation(List<Mutation> mutList, String column, Int64 value, Int64 timestamp)
         {
             CreateMutation(mutList, column, value.ToCassandraByte(), timestamp);
@@ -167,12 +194,13 @@ namespace CassandraLog4NetAppenderLibrary.Logging.Appender
             col.Name = column.ToCassandraByte();
             col.Value = value;
             col.Timestamp = timestamp;
+            col.Ttl = LevelMapping.GetTtl();
             ColumnOrSuperColumn cosc = new ColumnOrSuperColumn();
             cosc.Column = col;
             mutation.Column_or_supercolumn = cosc;
             mutList.Add(mutation);
         }
-
+        
         private void SetupSchema()
         {
             try
@@ -187,38 +215,6 @@ namespace CassandraLog4NetAppenderLibrary.Logging.Appender
             {
                 throw exception;
             }
-        }
-
-        private KsDef VerifyKeyspace()
-        {
-            KsDef ksDef = null;
-            try
-            {
-                ksDef = this.client.describe_keyspace(LevelMapping.KeyspaceName);
-            }
-            catch (NotFoundException)
-            {
-            }
-            catch (Exception exception)
-            {
-                throw new IOException("Exception caught while trying to verify keyspace existance.", exception);
-            }
-            return ksDef;
-        }
-
-        private Boolean CheckForColumnFamily(KsDef ksDef)
-        {
-            Boolean exists = false;
-            foreach (CfDef cfDef in ksDef.Cf_defs)
-            {
-                if (cfDef.Name.Equals(LevelMapping.ColumnFamily))
-                {
-                    exists = true;
-                    break;
-                }
-            }
-
-            return exists;
         }
 
         private void CreateKeyspaceAndColumnFamily()
@@ -261,34 +257,39 @@ namespace CassandraLog4NetAppenderLibrary.Logging.Appender
             }
         }
 
-        private CfDef CreateCfDef()
+        private KsDef VerifyKeyspace()
         {
-            CfDef cfDef = new CfDef();
-            cfDef.Keyspace = LevelMapping.KeyspaceName;
-            cfDef.Name = LevelMapping.ColumnFamily;
-            cfDef.Key_validation_class = "UUIDType";
-            cfDef.Comparator_type = "UTF8Type";
-            cfDef.Default_validation_class = "UTF8Type";
-
-            AddColumn(cfDef, "app_name", "UTF8Type");
-            AddColumn(cfDef, "host_ip", "UTF8Type");
-            AddColumn(cfDef, "host_name", "UTF8Type");
-            AddColumn(cfDef, "logger_name", "UTF8Type");
-            AddColumn(cfDef, "level", "UTF8Type");
-            AddColumn(cfDef, "class_name", "UTF8Type");
-            AddColumn(cfDef, "file_name", "UTF8Type");
-            AddColumn(cfDef, "line_number", "UTF8Type");
-            AddColumn(cfDef, "method_name", "UTF8Type");
-            AddColumn(cfDef, "message", "UTF8Type");
-            AddColumn(cfDef, "app_start_time", "LongType");
-            AddColumn(cfDef, "thread_name", "UTF8Type");
-            AddColumn(cfDef, "throwable_str_rep", "UTF8Type");
-            AddColumn(cfDef, "log_timestamp", "LongType");
-
-            return cfDef;
+            KsDef ksDef = null;
+            try
+            {
+                ksDef = this.client.describe_keyspace(LevelMapping.KeyspaceName);
+            }
+            catch (NotFoundException)
+            {
+            }
+            catch (Exception exception)
+            {
+                throw new IOException("Exception caught while trying to verify keyspace existance.", exception);
+            }
+            return ksDef;
         }
 
-        private CfDef AddColumn(CfDef cfDef, String columnName, String validator)
+        private Boolean CheckForColumnFamily(KsDef ksDef)
+        {
+            Boolean exists = false;
+            foreach (CfDef cfDef in ksDef.Cf_defs)
+            {
+                if (cfDef.Name.Equals(LevelMapping.ColumnFamily))
+                {
+                    exists = true;
+                    break;
+                }
+            }
+
+            return exists;
+        }
+
+        protected CfDef AddColumn(CfDef cfDef, String columnName, String validator)
         {
             ColumnDef colDef = new ColumnDef();
             colDef.Name = columnName.ToCassandraByte();
