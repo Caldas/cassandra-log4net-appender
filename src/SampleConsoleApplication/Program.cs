@@ -26,6 +26,7 @@ namespace SampleConsoleApplication
         private static void ConfigureLogger()
         {
             log4net.Config.XmlConfigurator.Configure();
+            
             Logger = log4net.LogManager.GetLogger("WhiteBoard");
         }
     }
