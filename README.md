@@ -31,35 +31,35 @@ A NuGet version is avaliable at: https://nuget.org/packages/CassandraLog4NetAppe
 ==============
 
 * Add at configSections
-	<section name="log4net" type="log4net.Config.Log4NetConfigurationSectionHandler, log4net" />
+	&lt;section name="log4net" type="log4net.Config.Log4NetConfigurationSectionHandler, log4net" /&gt;
 
 * Add Log4Net section 
-<pre><code>
-	&amp;log4net&gt;
-		&amp;root&gt;
-			<level value="ALL" />
-			<appender-ref ref="CassandraAppender" />
-		</root>
-		<logger name="YOUR_LOGGER_NAME">
-			<appender-ref ref="CassandraAppender" />
-		</logger>
-		<appender name="CassandraAppender" type="CassandraLog4NetAppenderLibrary.Logging.Appender.CassandraAppender, CassandraLog4NetAppenderLibrary">
-			<mapping>
-				<level value="ALL" />
-				<Hosts value="YOUR_HOST_NAME" />
-				<Port value="YOUR_HOST_PORT" />
-				<AppName value="SampleConsoleApplication" />
-				<KeyspaceName value="Logging" />
-				<ColumnFamily value="LogEntries" />
-				<PlacementStrategy value="org.apache.cassandra.locator.NetworkTopologyStrategy" />
-				<StrategyOptions value="Cassandra:1" />
-				<ReplicationFactor value="1" />
-				<ConsistencyLevelWrite value="QUORUM" />
-				<MaxBufferedRows value="1" />
-			</mapping>
-		</appender>
-	</log4net>
-</code></pre>
+&lt;pre&gt;&lt;code&gt;
+	&lt;log4net&gt;
+		&lt;root&gt;
+			&lt;level value="ALL" /&gt;
+			&lt;appender-ref ref="CassandraAppender" /&gt;
+		&lt;/root&gt;
+		&lt;logger name="YOUR_LOGGER_NAME"&gt;
+			&lt;appender-ref ref="CassandraAppender" /&gt;
+		&lt;/logger&gt;
+		&lt;appender name="CassandraAppender" type="CassandraLog4NetAppenderLibrary.Logging.Appender.CassandraAppender, CassandraLog4NetAppenderLibrary"&gt;
+			&lt;mapping&gt;
+				&lt;level value="ALL" /&gt;
+				&lt;Hosts value="YOUR_HOST_NAME" /&gt;
+				&lt;Port value="YOUR_HOST_PORT" /&gt;
+				&lt;AppName value="SampleConsoleApplication" /&gt;
+				&lt;KeyspaceName value="Logging" /&gt;
+				&lt;ColumnFamily value="LogEntries" /&gt;
+				&lt;PlacementStrategy value="org.apache.cassandra.locator.NetworkTopologyStrategy" /&gt;
+				&lt;StrategyOptions value="Cassandra:1" /&gt;
+				&lt;ReplicationFactor value="1" /&gt;
+				&lt;ConsistencyLevelWrite value="QUORUM" /&gt;
+				&lt;MaxBufferedRows value="1" /&gt;
+			&lt;/mapping&gt;
+		&lt;/appender&gt;
+	&lt;/log4net&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 * Configure and use Log4Net object
 
@@ -71,7 +71,7 @@ A NuGet version is avaliable at: https://nuget.org/packages/CassandraLog4NetAppe
 ==============
 
 Cassandra Log4Net Appender - Log4Net Appender to store your logs on Cassandra NoSQL
-Copyright (C) 2012 [Fábio Caldas](https://github.com/Caldas) / [Vtex](http://www.vtex.com.br) <fabio.caldas@vtex.com.br>
+Copyright (C) 2012 [Fábio Caldas](https://github.com/Caldas) / [Vtex](http://www.vtex.com.br) &lt;fabio.caldas@vtex.com.br&gt;
 
 This library is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -84,4 +84,4 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with this library. If not, see <http://www.gnu.org/licenses/>.
+along with this library. If not, see &lt;http://www.gnu.org/licenses/&gt;.
