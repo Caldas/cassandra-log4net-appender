@@ -194,7 +194,9 @@ namespace CassandraLog4NetAppenderLibrary.Logging.Appender
             col.Name = column.ToCassandraByte();
             col.Value = value;
             col.Timestamp = timestamp;
-            col.Ttl = LevelMapping.GetTtl();
+            Int32 ttl = LevelMapping.GetTtl();
+            if (ttl > 0)
+                col.Ttl = 0;
             ColumnOrSuperColumn cosc = new ColumnOrSuperColumn();
             cosc.Column = col;
             mutation.Column_or_supercolumn = cosc;
