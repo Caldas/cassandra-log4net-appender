@@ -34,32 +34,32 @@ A NuGet version is avaliable at: https://nuget.org/packages/CassandraLog4NetAppe
 	<section name="log4net" type="log4net.Config.Log4NetConfigurationSectionHandler, log4net" />
 
 * Add Log4Net section 
-<code>
-  <log4net>
-    <root>
-      <level value="ALL" />
-      <appender-ref ref="CassandraAppender" />
-    </root>
-    <logger name="YOUR_LOGGER_NAME">
-      <appender-ref ref="CassandraAppender" />
-    </logger>
-    <appender name="CassandraAppender" type="CassandraLog4NetAppenderLibrary.Logging.Appender.CassandraAppender, CassandraLog4NetAppenderLibrary">
-      <mapping>
-        <level value="ALL" />
-        <Hosts value="YOUR_HOST_NAME" />
-        <Port value="YOUR_HOST_PORT" />
-        <AppName value="SampleConsoleApplication" />
-        <KeyspaceName value="Logging" />
-        <ColumnFamily value="LogEntries" />
-        <PlacementStrategy value="org.apache.cassandra.locator.NetworkTopologyStrategy" />
-        <StrategyOptions value="Cassandra:1" />
-        <ReplicationFactor value="1" />
-        <ConsistencyLevelWrite value="QUORUM" />
-        <MaxBufferedRows value="1" />
-      </mapping>
-    </appender>
-  </log4net>
-</code>
+
+	<log4net>
+		<root>
+			<level value="ALL" />
+			<appender-ref ref="CassandraAppender" />
+		</root>
+		<logger name="YOUR_LOGGER_NAME">
+			<appender-ref ref="CassandraAppender" />
+		</logger>
+		<appender name="CassandraAppender" type="CassandraLog4NetAppenderLibrary.Logging.Appender.CassandraAppender, CassandraLog4NetAppenderLibrary">
+			<mapping>
+				<level value="ALL" />
+				<Hosts value="YOUR_HOST_NAME" />
+				<Port value="YOUR_HOST_PORT" />
+				<AppName value="SampleConsoleApplication" />
+				<KeyspaceName value="Logging" />
+				<ColumnFamily value="LogEntries" />
+				<PlacementStrategy value="org.apache.cassandra.locator.NetworkTopologyStrategy" />
+				<StrategyOptions value="Cassandra:1" />
+				<ReplicationFactor value="1" />
+				<ConsistencyLevelWrite value="QUORUM" />
+				<MaxBufferedRows value="1" />
+			</mapping>
+		</appender>
+	</log4net>
+
 
 * Configure and use Log4Net object
 
