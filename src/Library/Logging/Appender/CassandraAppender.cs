@@ -121,7 +121,7 @@ namespace CassandraLog4NetAppenderLibrary.Logging.Appender
             this.rowBuffer = new Dictionary<Byte[], Dictionary<String, List<Mutation>>>();
         }
 
-        protected virtual List<Mutation> CreateMutationList(LoggingEvent loggingEvent)
+        public virtual List<Mutation> CreateMutationList(LoggingEvent loggingEvent)
         {
             List<Mutation> mutList = new List<Mutation>();
 
@@ -149,7 +149,7 @@ namespace CassandraLog4NetAppenderLibrary.Logging.Appender
             return mutList;
         }
 
-        protected virtual CfDef CreateCfDef()
+        public virtual CfDef CreateCfDef()
         {
             CfDef cfDef = new CfDef();
             cfDef.Keyspace = LevelMapping.KeyspaceName;
