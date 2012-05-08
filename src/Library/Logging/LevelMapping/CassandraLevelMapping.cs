@@ -61,7 +61,7 @@ namespace CassandraLog4NetAppenderLibrary.Logging.LevelMapping
         public Int32 GetMaxBufferedRows()
         {
             Int32 maxBufferedRows = defaultMaxBufferedRows;
-            Int32.TryParse(Port, out maxBufferedRows);
+            Int32.TryParse(MaxBufferedRows, out maxBufferedRows);
             return maxBufferedRows;
         }
 
