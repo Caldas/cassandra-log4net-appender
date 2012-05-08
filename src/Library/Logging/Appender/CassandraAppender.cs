@@ -25,7 +25,7 @@ namespace CassandraLog4NetAppenderLibrary.Logging.Appender
         private static String ip = GetIP();
         private static String hostname = GetHostName();
 
-        public CassandraLevelMapping cassandraLevelMapping { get; set; }
+        public CassandraLevelMapping LevelMapping { get; set; }
 
         public CassandraAppender() { }
 
@@ -36,7 +36,7 @@ namespace CassandraLog4NetAppenderLibrary.Logging.Appender
 
         public void AddMapping(CassandraLevelMapping mapping)
         {
-            cassandraLevelMapping = mapping;
+            LevelMapping = mapping;
         }
 
         override public void ActivateOptions()
@@ -46,10 +46,10 @@ namespace CassandraLog4NetAppenderLibrary.Logging.Appender
             {
                 ICassandraClientFactory cassandraClientFactory = null;
 
-                if (String.IsNullOrWhiteSpace(cassandraLevelMapping.CassandraClientFactory))
-                    cassandraClientFactory = new DefaultCassandraClientFactory(cassandraLevelMapping.Hosts, cassandraLevelMapping.GetPort());
+                if (String.IsNullOrWhiteSpace(LevelMapping.CassandraClientFactory))
+                    cassandraClientFactory = new DefaultCassandraClientFactory(LevelMapping.Hosts, LevelMapping.GetPort());
                 else
-                    cassandraClientFactory = (ICassandraClientFactory)Activator.CreateInstance(Type.GetType(cassandraLevelMapping.CassandraClientFactory));
+                    cassandraClientFactory = (ICassandraClientFactory)Activator.CreateInstance(Type.GetType(LevelMapping.CassandraClientFactory));
 
                 this.client = cassandraClientFactory.CreateConnection();
             }
@@ -69,11 +69,11 @@ namespace CassandraLog4NetAppenderLibrary.Logging.Appender
 
             try
             {
-                this.client.set_keyspace(cassandraLevelMapping.KeyspaceName);
+                this.client.set_keyspace(LevelMapping.KeyspaceName);
             }
             catch (Exception exception)
             {
-                throw new Exception("Error setting keyspace: " + cassandraLevelMapping.KeyspaceName, exception);
+                throw new Exception("Error setting keyspace: " + LevelMapping.KeyspaceName, exception);
             }
 
             Reset();
@@ -83,24 +83,24 @@ namespace CassandraLog4NetAppenderLibrary.Logging.Appender
         {
             Byte[] rowId = TimeGenerator.GetTimeUUID().ToCassandraByte();
             Dictionary<String, List<Mutation>> mutMap = new Dictionary<String, List<Mutation>>();
-            mutMap.Add(cassandraLevelMapping.ColumnFamily, CreateMutationList(loggingEvent));
+            mutMap.Add(LevelMapping.ColumnFamily, CreateMutationList(loggingEvent));
             this.rowBuffer.Add(rowId, mutMap);
             FlushIfNecessary();
         }
 
-        private void FlushIfNecessary()
+        protected void FlushIfNecessary()
         {
-            if (this.rowBuffer.Count >= cassandraLevelMapping.GetMaxBufferedRows())
+            if (this.rowBuffer.Count >= LevelMapping.GetMaxBufferedRows())
                 Flush();
         }
 
-        private void Flush()
+        protected void Flush()
         {
             if (this.rowBuffer.Count > 0)
             {
                 try
                 {
-                    this.client.batch_mutate(this.rowBuffer, cassandraLevelMapping.GetConsistencyLevel());
+                    this.client.batch_mutate(this.rowBuffer, LevelMapping.GetConsistencyLevel());
                 }
                 catch (Exception exception)
                 {
@@ -116,18 +116,18 @@ namespace CassandraLog4NetAppenderLibrary.Logging.Appender
             base.Close();
         }
 
-        private void Reset()
+        protected void Reset()
         {
             this.rowBuffer = new Dictionary<Byte[], Dictionary<String, List<Mutation>>>();
         }
 
-        private List<Mutation> CreateMutationList(LoggingEvent loggingEvent)
+        public virtual List<Mutation> CreateMutationList(LoggingEvent loggingEvent)
         {
             List<Mutation> mutList = new List<Mutation>();
 
             Int64 colTs = TimeGenerator.GetUnixTime();
 
-            CreateMutation(mutList, "app_name", cassandraLevelMapping.AppName, colTs);
+            CreateMutation(mutList, "app_name", LevelMapping.AppName, colTs);
             CreateMutation(mutList, "host_ip", ip, colTs);
             CreateMutation(mutList, "host_name", hostname, colTs);
             CreateMutation(mutList, "logger_name", loggingEvent.LoggerName, colTs);
@@ -149,18 +149,18 @@ namespace CassandraLog4NetAppenderLibrary.Logging.Appender
             return mutList;
         }
 
-        private void CreateMutation(List<Mutation> mutList, String column, Int64 value, Int64 timestamp)
+        protected void CreateMutation(List<Mutation> mutList, String column, Int64 value, Int64 timestamp)
         {
             CreateMutation(mutList, column, value.ToCassandraByte(), timestamp);
         }
 
-        private void CreateMutation(List<Mutation> mutList, String column, String value, Int64 timestamp)
+        protected void CreateMutation(List<Mutation> mutList, String column, String value, Int64 timestamp)
         {
             if (!String.IsNullOrWhiteSpace(value))
                 CreateMutation(mutList, column, value.ToCassandraByte(), timestamp);
         }
 
-        private void CreateMutation(List<Mutation> mutList, String column, Byte[] value, Int64 timestamp)
+        protected void CreateMutation(List<Mutation> mutList, String column, Byte[] value, Int64 timestamp)
         {
             Mutation mutation = new Mutation();
             Column col = new Column();
@@ -194,7 +194,7 @@ namespace CassandraLog4NetAppenderLibrary.Logging.Appender
             KsDef ksDef = null;
             try
             {
-                ksDef = this.client.describe_keyspace(cassandraLevelMapping.KeyspaceName);
+                ksDef = this.client.describe_keyspace(LevelMapping.KeyspaceName);
             }
             catch (NotFoundException)
             {
@@ -211,7 +211,7 @@ namespace CassandraLog4NetAppenderLibrary.Logging.Appender
             Boolean exists = false;
             foreach (CfDef cfDef in ksDef.Cf_defs)
             {
-                if (cfDef.Name.Equals(cassandraLevelMapping.ColumnFamily))
+                if (cfDef.Name.Equals(LevelMapping.ColumnFamily))
                 {
                     exists = true;
                     break;
@@ -228,15 +228,15 @@ namespace CassandraLog4NetAppenderLibrary.Logging.Appender
             try
             {
                 KsDef ksDef = new KsDef();
-                ksDef.Name = cassandraLevelMapping.KeyspaceName;
-                ksDef.Strategy_class = cassandraLevelMapping.PlacementStrategy;
+                ksDef.Name = LevelMapping.KeyspaceName;
+                ksDef.Strategy_class = LevelMapping.PlacementStrategy;
                 ksDef.Cf_defs = cfDefList;
-                var strategyOptions = cassandraLevelMapping.GetStrategyOptions();
-                if (cassandraLevelMapping.PlacementStrategy.Equals("org.apache.cassandra.locator.SimpleStrategy") && !strategyOptions.ContainsKey("replication_factor"))
-                    strategyOptions.Add("replication_factor", cassandraLevelMapping.ReplicationFactor.ToString());
+                var strategyOptions = LevelMapping.GetStrategyOptions();
+                if (LevelMapping.PlacementStrategy.Equals("org.apache.cassandra.locator.SimpleStrategy") && !strategyOptions.ContainsKey("replication_factor"))
+                    strategyOptions.Add("replication_factor", LevelMapping.ReplicationFactor.ToString());
                 ksDef.Strategy_options = strategyOptions;
                 this.client.system_add_keyspace(ksDef);
-                int magnitude = this.client.describe_ring(cassandraLevelMapping.KeyspaceName).Count;
+                int magnitude = this.client.describe_ring(LevelMapping.KeyspaceName).Count;
                 Thread.Sleep(1000 * magnitude);
             }
             catch (Exception exception)
@@ -250,9 +250,9 @@ namespace CassandraLog4NetAppenderLibrary.Logging.Appender
             CfDef cfDef = CreateCfDef();
             try
             {
-                this.client.set_keyspace(cassandraLevelMapping.KeyspaceName);
+                this.client.set_keyspace(LevelMapping.KeyspaceName);
                 this.client.system_add_column_family(cfDef);
-                int magnitude = this.client.describe_ring(cassandraLevelMapping.KeyspaceName).Count;
+                int magnitude = this.client.describe_ring(LevelMapping.KeyspaceName).Count;
                 Thread.Sleep(1000 * magnitude);
             }
             catch (Exception e)
@@ -264,8 +264,8 @@ namespace CassandraLog4NetAppenderLibrary.Logging.Appender
         private CfDef CreateCfDef()
         {
             CfDef cfDef = new CfDef();
-            cfDef.Keyspace = cassandraLevelMapping.KeyspaceName;
-            cfDef.Name = cassandraLevelMapping.ColumnFamily;
+            cfDef.Keyspace = LevelMapping.KeyspaceName;
+            cfDef.Name = LevelMapping.ColumnFamily;
             cfDef.Key_validation_class = "UUIDType";
             cfDef.Comparator_type = "UTF8Type";
             cfDef.Default_validation_class = "UTF8Type";
