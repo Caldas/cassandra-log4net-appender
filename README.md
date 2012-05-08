@@ -35,8 +35,8 @@ A NuGet version is avaliable at: https://nuget.org/packages/CassandraLog4NetAppe
 
 * Add Log4Net section 
 <pre><code>
-	<log4net>
-		<root>
+	&amp;log4net&gt;
+		&amp;root&gt;
 			<level value="ALL" />
 			<appender-ref ref="CassandraAppender" />
 		</root>
