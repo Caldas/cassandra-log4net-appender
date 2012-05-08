@@ -33,7 +33,8 @@ A NuGet version is avaliable at: https://nuget.org/packages/CassandraLog4NetAppe
 * Add at configSections
 	<section name="log4net" type="log4net.Config.Log4NetConfigurationSectionHandler, log4net" />
 
-* Add Log4Net section
+* Add Log4Net section 
+<pre><code>
   <log4net>
     <root>
       <level value="ALL" />
@@ -58,10 +59,12 @@ A NuGet version is avaliable at: https://nuget.org/packages/CassandraLog4NetAppe
       </mapping>
     </appender>
   </log4net>
+</code></pre>
 
 * Configure and use Log4Net object
 
 	log4net.Config.XmlConfigurator.Configure();
+	
     var Logger = log4net.LogManager.GetLogger("YOUR_LOGGER_NAME");
 
 ### 4. Copyright
