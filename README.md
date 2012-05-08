@@ -34,7 +34,7 @@ A NuGet version is avaliable at: https://nuget.org/packages/CassandraLog4NetAppe
 	&lt;section name="log4net" type="log4net.Config.Log4NetConfigurationSectionHandler, log4net" /&gt;
 
 * Add Log4Net section 
-&lt;pre&gt;&lt;code&gt;
+<pre><code>
 	&lt;log4net&gt;
 		&lt;root&gt;
 			&lt;level value="ALL" /&gt;
@@ -59,7 +59,7 @@ A NuGet version is avaliable at: https://nuget.org/packages/CassandraLog4NetAppe
 			&lt;/mapping&gt;
 		&lt;/appender&gt;
 	&lt;/log4net&gt;
-&lt;/code&gt;&lt;/pre&gt;
+<code></pre>
 
 * Configure and use Log4Net object
 
