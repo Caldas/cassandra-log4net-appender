@@ -14,20 +14,24 @@ namespace SampleConsoleApplication
 {
     class Program
     {
-        private static ILog Logger { get; set; }
+        private static ILog NormalLogger { get; set; }
+
+        //ProxyLogger use ProxyCassandraClientFactory. This factory provide a proxy Cassandra Client that can retry any Cassandra command that raise error.
+        private static ILog ProxyLogger { get; set; }
 
         static void Main(string[] args)
         {
             ConfigureLogger();
 
-            Logger.Info("TEST");
+            NormalLogger.Info("Hello World");
         }
 
         private static void ConfigureLogger()
         {
             log4net.Config.XmlConfigurator.Configure();
-            
-            Logger = log4net.LogManager.GetLogger("WhiteBoard");
+
+            NormalLogger = log4net.LogManager.GetLogger("Normal");
+            ProxyLogger = log4net.LogManager.GetLogger("Proxy");
         }
     }
 }

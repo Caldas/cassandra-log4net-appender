@@ -47,11 +47,11 @@ namespace CassandraLog4NetAppenderLibrary.Logging.Appender
                 ICassandraClientFactory cassandraClientFactory = null;
 
                 if (String.IsNullOrWhiteSpace(LevelMapping.CassandraClientFactory))
-                    cassandraClientFactory = new DefaultCassandraClientFactory(LevelMapping.Hosts, LevelMapping.GetPort());
+                    cassandraClientFactory = new DefaultCassandraClientFactory();
                 else
                     cassandraClientFactory = (ICassandraClientFactory)Activator.CreateInstance(Type.GetType(LevelMapping.CassandraClientFactory));
 
-                this.client = cassandraClientFactory.CreateConnection();
+                this.client = cassandraClientFactory.CreateConnection(LevelMapping.Host, LevelMapping.GetPort());
             }
             catch (Exception exception)
             {

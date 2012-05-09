@@ -7,6 +7,6 @@ namespace CassandraLog4NetAppenderLibrary.Logging
 {
     public interface ICassandraClientFactory
     {
-        Apache.Cassandra.Cassandra.Iface CreateConnection();
+        Apache.Cassandra.Cassandra.Iface CreateConnection(String host, Int32 port);
     }
 }

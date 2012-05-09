@@ -18,7 +18,7 @@ namespace CassandraLog4NetAppenderLibrary.Logging.LevelMapping
         private const Int32 defaultTtl = 0;
         private const Apache.Cassandra.ConsistencyLevel defaultConsistencyLevel = Apache.Cassandra.ConsistencyLevel.ONE;
 
-        public String Hosts { get; set; }
+        public String Host { get; set; }
         public String Port { get; set; }
         public String AppName { get; set; }
         public String KeyspaceName { get; set; }
@@ -41,7 +41,7 @@ namespace CassandraLog4NetAppenderLibrary.Logging.LevelMapping
             ConsistencyLevel = defaultConsistencyLevel.ToString();
             Ttl = String.Empty;
             MaxBufferedRows = defaultMaxBufferedRows.ToString();
-            Hosts = "localhost";
+            Host = "localhost";
             Port = defaultPort.ToString();
             CassandraClientFactory = String.Empty;
         }
